@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animação do Passinho do Urso</title>
+</head>
+<body>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 120vh;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            background: url("cenario.png") no-repeat center center fixed;
+            background-size: contain;
+        }
+
+        .urso {
+            width: 150px;
+            height: 150px;
+            background: url("urso-1.png") no-repeat;
+            background-size: contain;
+            position: absolute;
+            top: 620px;
+            left: 0;
+            transform: translateY(-50%);
+            transition: transform 0.2s, left 0.2s;
+        }
+
+        .flip-image {
+            -webkit-transform: scaleX(-1);
+            transform: scaleX(-1);
+        }
+
+        .jump {
+            animation: jump-animation 0.5s ease-out;
+        }
+
+        @keyframes jump-animation {
+            0% { transform: translateY(-50%) translateY(0); }
+            50% { transform: translateY(-50%) translateY(-100px); }
+            100% { transform: translateY(-50%) translateY(0); }
+        }
+    </style>
+
+    <div class="urso" id="urso"></div>
+
+    <script>
+        const urso = document.getElementById('urso');
+        const imagensUrso = ["urso-1.png", "urso-2.png", "urso-3.png"];
+        let indiceImagemAtual = 0;
+        let posicaoAtual = 0;
+
+        function move(event) {
+            if (event.key === 'd') {
+                moveRight();
+            } else if (event.key === 'a') {
+                moveLeft();
+            } else if (event.key === 'w') {
+                jump();
+            }
+        }
+
+        function moveRight() {
+            urso.classList.remove('flip-image');
+            posicaoAtual += 20;
+            if (posicaoAtual > window.innerWidth - 150) {
+                posicaoAtual = window.innerWidth - 150;
+            }
+            updateUrso();
+        }
+
+        function moveLeft() {
+            urso.classList.add('flip-image');
+            posicaoAtual -= 20;
+            if (posicaoAtual < 0) {
+                posicaoAtual = 0;
+            }
+            updateUrso();
+        }
+
+        function jump() {
+            if (!urso.classList.contains('jump')) {
+                urso.classList.add('jump');
+                setTimeout(() => {
+                    urso.classList.remove('jump');
+                }, 500);
+            }
+        }
+
+        function updateUrso() {
+            urso.style.left = `${posicaoAtual}px`;
+            urso.style.backgroundImage = `url(${imagensUrso[indiceImagemAtual]})`;
+            indiceImagemAtual = (indiceImagemAtual + 1) % imagensUrso.length;
+        }
+
+        window.addEventListener('keydown', move);
+    </script>
+</body>
+</html>
